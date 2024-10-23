@@ -51,7 +51,7 @@ function App() {
               {editingTask === task.id ? (
                 <div>
                   <input
-                    type="text"
+                    type="tex"
                     value={editInput}
                     onChange={(e) => setEditInput(e.target.value)}
                     placeholder="Edit task"
