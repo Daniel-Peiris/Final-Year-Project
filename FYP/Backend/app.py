@@ -1,27 +1,46 @@
 from flask import Flask, request, jsonify
-import pickle
-import numpy as np
+from flask_cors import CORS
+import random
 
 app = Flask(__name__)
+# Enable CORS for all routes and origins
+CORS(app)
 
-# Load the model from the pickle file located in the same directory.
-with open("random_forest_model.pkl", "rb") as f:
-    model = pickle.load(f)
+def simulate_yield(crop, province, district, landscape, size_sqm):
+    # Base yield multipliers for each crop.
+    base_rate = {
+        "Tomatoes": 1.0,
+        "Chili": 0.9,
+        "Cabbage": 1.2,
+        "Bitter_Gourd": 1.1,
+        "Long_Beans": 0.8,
+        "Pumpkin": 1.3,
+        "Eggplant": 1.0,
+        "Cucumber": 1.0,
+        "Drumstick": 0.95
+    }
+    crop_rate = base_rate.get(crop, 1.0)
+    # Add random noise and small modifiers to simulate real-world variation.
+    noise = random.uniform(0.95, 1.05)
+    prov_modifier = random.uniform(0.98, 1.02)
+    district_modifier = random.uniform(0.98, 1.02)
+    landscape_modifier = random.uniform(0.98, 1.02)
+    combined_modifier = prov_modifier * district_modifier * landscape_modifier
+    predicted_yield = size_sqm * crop_rate * noise * combined_modifier
+    return predicted_yield
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    """
-    Expects JSON input with a key "features" that holds a list of feature values.
-    Example:
-    {
-        "features": [0, 1, 0, 1500]
-    }
-    Make sure the features are ordered the same way as they were during training.
-    """
     data = request.get_json(force=True)
-    features = np.array(data['features']).reshape(1, -1)
-    prediction = model.predict(features)[0]
-    return jsonify({"prediction": float(prediction)})
+    crop = data.get("crop")
+    province = data.get("province")
+    district = data.get("district")
+    landscape = data.get("landscape")
+    size_sqm = data.get("size_sqm")
+    
+    prediction = simulate_yield(crop, province, district, landscape, size_sqm)
+    # Round to 2 decimal places.
+    return jsonify({"prediction": round(prediction, 2)})
 
 if __name__ == '__main__':
     # Run the Flask app on port 5000.
