@@ -419,10 +419,7 @@ function App() {
   return (
     <AppContainer>
       <MainBanner>
-        <VideoBg autoPlay loop muted playsInline>
-          <source src="https://player.vimeo.com/external/589592169.sd.mp4?s=8b21e61cc5b6c58c2a3eb0f2c2c8b0d8c5bb3c6d&profile_id=165&oauth2_token_id=57447761" type="video/mp4" />
-          Your browser does not support the video tag.
-        </VideoBg>
+        
         <BannerContent>
           <Title
             initial={{ y: -50, opacity: 0 }}
