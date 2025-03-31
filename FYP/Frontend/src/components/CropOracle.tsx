@@ -1,39 +1,76 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import styled from '@emotion/styled';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sprout, MapPin, Mountain, Ruler, Calculator, Leaf, Search } from 'lucide-react';
+import { Sprout, MapPin, Mountain, Ruler, Calculator, Leaf, Loader2, Search } from 'lucide-react';
 
 const Container = styled.div`
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
   max-width: 800px;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+  }
 `;
 
 const SectionTitle = styled(motion.h2)`
-  color: #2ecc71;
-  font-size: 2.5rem;
+  font-size: 3rem;
   margin-bottom: 3rem;
   text-align: center;
-  font-weight: 700;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  text-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
+  background: linear-gradient(45deg, #2ecc71, #b8ff30);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 
   svg {
     color: #2ecc71;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    gap: 0.75rem;
+
+    svg {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    gap: 0.5rem;
+
+    svg {
+      width: 28px;
+      height: 28px;
+    }
   }
 `;
 
 const Form = styled(motion.form)`
   width: 100%;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
   padding: 2rem;
   border-radius: 15px;
   border: 1px solid rgba(46, 204, 113, 0.2);
   box-shadow: 0 4px 30px rgba(46, 204, 113, 0.1);
   backdrop-filter: blur(5px);
+
+  @media (max-width: 768px) {
+    padding: 1.25rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
 `;
 
 const FormGroup = styled(motion.div)`
@@ -43,13 +80,26 @@ const FormGroup = styled(motion.div)`
   background: rgba(0, 0, 0, 0.2);
   padding: 1rem;
   border-radius: 8px;
-  border: 1px solid rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 112, 0);
   transition: all 0.3s ease;
 
   &:hover {
     border-color: rgba(46, 204, 113, 0.3);
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.1);
+    box-shadow: 0 0 15px rgba(46, 204, 112, 0.37);
     transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.75rem;
+    gap: 0.5rem;
   }
 `;
 
@@ -63,6 +113,17 @@ const Label = styled.label`
 
   svg {
     color: #2ecc71;
+    min-width: 20px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.875rem;
+    gap: 0.5rem;
   }
 `;
 
@@ -70,12 +131,13 @@ const Select = styled.select`
   flex: 1;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(46, 204, 113, 0.3);
   border-radius: 8px;
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
+  width: 100%;
 
   &:focus {
     outline: none;
@@ -86,6 +148,17 @@ const Select = styled.select`
   option {
     background: #1a1a1a;
     color: white;
+    padding: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
   }
 `;
 
@@ -93,11 +166,12 @@ const Input = styled.input`
   flex: 1;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(46, 204, 113, 0.3);
   border-radius: 8px;
   color: white;
   transition: all 0.3s ease;
+  width: 100%;
 
   &:focus {
     outline: none;
@@ -108,6 +182,16 @@ const Input = styled.input`
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
     opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
   }
 `;
 
@@ -126,7 +210,9 @@ const Button = styled(motion.button)`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   position: relative;
   overflow: hidden;
 
@@ -148,6 +234,31 @@ const Button = styled(motion.button)`
 
   &:hover::before {
     left: 100%;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    gap: 0.625rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.875rem;
+    font-size: 0.875rem;
+    margin-top: 1.25rem;
+    gap: 0.5rem;
+    letter-spacing: 0.5px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 `;
 
@@ -180,11 +291,59 @@ const Result = styled(motion.div)`
     color: rgba(255, 255, 255, 0.7);
     margin-left: 0.5rem;
   }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+
+    h3 {
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: 2.25rem;
+    }
+
+    .unit {
+      font-size: 1.25rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    p {
+      font-size: 1.75rem;
+    }
+
+    .unit {
+      font-size: 1rem;
+    }
+  }
 `;
 
 const LeafDecoration = styled(motion.div)`
   position: absolute;
   color: rgba(46, 204, 113, 0.2);
+
+  @media (max-width: 768px) {
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 `;
 
 const formAnimation = {
@@ -209,49 +368,96 @@ const CropOracle: React.FC = () => {
     "Tomatoes",
     "Chili",
     "Cabbage",
-    "Bitter Gourd",
-    "Long Beans",
+    "Bitter_Gourd",
+    "Long_Beans",
     "Pumpkin",
     "Eggplant",
     "Cucumber",
     "Drumstick",
   ];
-  const provinces: string[] = ["Western", "Central", "Southern", "Northern", "Eastern"];
+
+  const provinces = [
+    "Western Province",
+    "Central Province",
+    "Southern Province",
+    "Northern Province",
+    "Eastern Province",
+    "North Western Province",
+    "North Central Province",
+    "Uva Province",
+    "Sabaragamuwa Province"
+  ];
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const districtsByProvince: { [key: string]: string[] } = {
-    "Western": ["Colombo", "Gampaha", "Kalutara"],
-    "Central": ["Kandy", "Matale", "Nuwara Eliya"],
-    "Southern": ["Galle", "Matara", "Hambantota"],
-    "Northern": ["Jaffna", "Kilinochchi", "Mullaitivu"],
-    "Eastern": ["Trincomalee", "Batticaloa", "Ampara"]
+    "Western Province": ["Colombo", "Gampaha", "Kalutara"],
+    "Central Province": ["Kandy", "Matale", "Nuwara Eliya"],
+    "Southern Province": ["Galle", "Matara", "Hambantota"],
+    "Northern Province": ["Jaffna", "Kilinochchi", "Mannar", "Mullaitivu", "Vavuniya"],
+    "Eastern Province": ["Trincomalee", "Batticaloa", "Ampara"],
+    "North Western Province": ["Kurunegala", "Puttalam"],
+    "North Central Province": ["Anuradhapura", "Polonnaruwa"],
+    "Uva Province": ["Badulla", "Monaragala"],
+    "Sabaragamuwa Province": ["Ratnapura", "Kegalle"]
   };
-  const landscapes: string[] = ["Flat Land", "Hillside", "Valley", "Coastal"];
+
+  const landscapes = [
+    "Lowland Plains",
+    "Mid-country",
+    "Up-country",
+    "Coastal Area",
+    "Dry Zone",
+    "Wet Zone",
+    "Intermediate Zone",
+    "Mountain Slopes",
+    "Valley"
+  ];
 
   const [selectedCrop, setSelectedCrop] = useState<string>(crops[0]);
   const [selectedProvince, setSelectedProvince] = useState<string>(provinces[0]);
-  const [districts, setDistricts] = useState<string[]>(districtsByProvince[provinces[0]]);
   const [selectedDistrict, setSelectedDistrict] = useState<string>(districtsByProvince[provinces[0]][0]);
   const [selectedLandscape, setSelectedLandscape] = useState<string>(landscapes[0]);
   const [size, setSize] = useState<number>(1000);
   const [prediction, setPrediction] = useState<number | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const newDistricts = districtsByProvince[selectedProvince];
-    setDistricts(newDistricts);
-    setSelectedDistrict(newDistricts[0]);
-  }, [selectedProvince]);
+    setSelectedDistrict(districtsByProvince[selectedProvince][0]);
+  }, [districtsByProvince, selectedProvince]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsCalculating(true);
-    setPrediction(null);
+    setError(null);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const simulatedPrediction = Math.round(size * (Math.random() * 0.5 + 0.5));
-    setPrediction(simulatedPrediction);
-    setIsCalculating(false);
+    const payload = {
+      crop: selectedCrop,
+      province: selectedProvince,
+      district: selectedDistrict,
+      landscape: selectedLandscape,
+      size_sqm: size,
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Prediction failed');
+      }
+      
+      const data = await response.json();
+      setPrediction(data.prediction);
+    } catch (error) {
+      console.error("Error:", error);
+      setError("Failed to get prediction. Please try again.");
+    } finally {
+      setIsCalculating(false);
+    }
   };
 
   return (
@@ -263,7 +469,6 @@ const CropOracle: React.FC = () => {
       >
         <Search size={52} />
         Crop Oracle
-        
       </SectionTitle>
 
       <Form
@@ -278,7 +483,7 @@ const CropOracle: React.FC = () => {
             Select Crop:
             <Select value={selectedCrop} onChange={(e) => setSelectedCrop(e.target.value)}>
               {crops.map((crop) => (
-                <option key={crop} value={crop}>{crop}</option>
+                <option key={crop} value={crop}>{crop.replace('_', ' ')}</option>
               ))}
             </Select>
           </Label>
@@ -288,7 +493,10 @@ const CropOracle: React.FC = () => {
           <Label>
             <MapPin size={20} />
             Select Province:
-            <Select value={selectedProvince} onChange={(e) => setSelectedProvince(e.target.value)}>
+            <Select 
+              value={selectedProvince} 
+              onChange={(e) => setSelectedProvince(e.target.value)}
+            >
               {provinces.map((province) => (
                 <option key={province} value={province}>{province}</option>
               ))}
@@ -300,8 +508,11 @@ const CropOracle: React.FC = () => {
           <Label>
             <MapPin size={20} />
             Select District:
-            <Select value={selectedDistrict} onChange={(e) => setSelectedDistrict(e.target.value)}>
-              {districts.map((district) => (
+            <Select 
+              value={selectedDistrict} 
+              onChange={(e) => setSelectedDistrict(e.target.value)}
+            >
+              {districtsByProvince[selectedProvince].map((district) => (
                 <option key={district} value={district}>{district}</option>
               ))}
             </Select>
@@ -312,7 +523,10 @@ const CropOracle: React.FC = () => {
           <Label>
             <Mountain size={20} />
             Select Landscape:
-            <Select value={selectedLandscape} onChange={(e) => setSelectedLandscape(e.target.value)}>
+            <Select 
+              value={selectedLandscape} 
+              onChange={(e) => setSelectedLandscape(e.target.value)}
+            >
               {landscapes.map((landscape) => (
                 <option key={landscape} value={landscape}>{landscape}</option>
               ))}
@@ -340,13 +554,22 @@ const CropOracle: React.FC = () => {
           whileTap={{ scale: 0.98 }}
           disabled={isCalculating}
         >
-          <Calculator size={24} />
-          {isCalculating ? 'Calculating...' : 'Calculate Harvest Prediction'}
+          {isCalculating ? (
+            <>
+              <Loader2 className="animate-spin" size={24} />
+              Calculating...
+            </>
+          ) : (
+            <>
+              <Calculator size={24} />
+              Calculate Harvest Prediction
+            </>
+          )}
         </Button>
       </Form>
 
       <AnimatePresence mode="wait">
-        {prediction !== null && (
+        {prediction !== null && !error && (
           <Result
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
