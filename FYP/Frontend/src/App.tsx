@@ -261,7 +261,7 @@ const SectionTitle = styled(motion.h2)`
   font-size: 2.5rem;
   margin-bottom: 2rem;
   text-align: center;
-  font-weight: 700;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -532,7 +532,7 @@ function App() {
       <MainBanner>
         <BannerContent>
           <motion.h1
-            className="text-5xl font-bold text-center bg-gradient-to-r from-[#2ecc71] to-[#b8ff30] bg-clip-text text-transparent mb-4 flex flex-col items-center gap-4 md:text-4xl sm:text-3xl"
+            className="text-5xl font-bold text-center bg-gradient-to-r from-[#2ecc71] to-[#b8ff30] bg-clip-text text-transparent mb-4 flex flex-col items-center gap-4 md:text-1xl sm:text-1xl"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
