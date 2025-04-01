@@ -247,12 +247,186 @@ const ContentContainer = styled(motion.div)`
 
 const InfoSection = styled.section`
   padding: 4rem 0;
-  background: #0f0f0f;
-  width: 100%;
+  background: linear-gradient(165deg, rgba(15, 15, 15, 0.95) 0%, rgba(10, 10, 10, 0.95) 100%);
+  width: 100vw;
   margin: 2rem 0;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(46, 204, 113, 0.1);
+  border-bottom: 1px solid rgba(46, 204, 113, 0.1);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(46, 204, 113, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
 
   @media (max-width: 768px) {
     padding: 2rem 0;
+  }
+`;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  perspective: 2000px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+`;
+
+const Card = styled(motion.div)`
+  background: transparent;
+  padding: 2.5rem;
+  text-align: center;
+  position: relative;
+  transform-style: preserve-3d;
+
+  &:hover {
+    .icon-3d {
+      transform: translateZ(60px) rotateY(360deg);
+      
+      svg {
+        filter: drop-shadow(0 0 20px rgba(46, 204, 113, 0.4));
+      }
+
+      .glow {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+
+      .rings circle {
+        stroke-dashoffset: 0;
+      }
+    }
+  }
+
+  .icon-3d {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 2rem;
+    position: relative;
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    transform: translateZ(40px);
+
+    svg {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 2;
+      color: #2ecc71;
+      stroke-width: 1.5;
+      filter: drop-shadow(0 0 10px rgba(46, 204, 113, 0.3));
+      transition: all 0.6s ease;
+    }
+
+    .glow {
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: radial-gradient(
+        circle,
+        rgba(46, 204, 113, 0.4) 0%,
+        rgba(46, 204, 113, 0) 70%
+      );
+      opacity: 0.5;
+      transition: all 0.6s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .rings {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 1;
+
+      circle {
+        fill: none;
+        stroke: #2ecc71;
+        stroke-width: 1;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        opacity: 0.2;
+        transform-origin: center;
+        transition: all 1.5s ease;
+
+        &:nth-of-type(1) {
+          animation: rotate 10s linear infinite;
+        }
+
+        &:nth-of-type(2) {
+          animation: rotate 15s linear infinite reverse;
+        }
+
+        &:nth-of-type(3) {
+          animation: rotate 20s linear infinite;
+        }
+      }
+    }
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #2ecc71;
+    text-shadow: 0 2px 4px rgba(46, 204, 113, 0.2);
+    transform: translateZ(20px);
+    font-weight: 700;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    transform: translateZ(10px);
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 2rem;
+
+    .icon-3d {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+    }
   }
 `;
 
@@ -269,7 +443,7 @@ const SectionTitle = styled(motion.h2)`
   background: linear-gradient(45deg, #2ecc71, #b8ff30);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
+  text-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
 
   @media (max-width: 768px) {
     font-size: 2rem;
@@ -277,57 +451,6 @@ const SectionTitle = styled(motion.h2)`
 
   @media (max-width: 480px) {
     font-size: 1.75rem;
-  }
-`;
-
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 0 1rem;
-  }
-`;
-
-const Card = styled.div`
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 15px;
-  padding: 2rem;
-  border: 1px solid rgba(46, 204, 113, 0.2);
-  transition: all 0.3s ease;
-  text-align: center;
-
-  @media (max-width: 768px) {
-    padding: 1.5rem;
-  }
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(46, 204, 113, 0.1);
-  }
-
-  svg {
-    width: 48px;
-    height: 48px;
-    color: #2ecc71;
-    margin-bottom: 1rem;
-  }
-
-  h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: #2ecc71;
-  }
-
-  p {
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.6;
   }
 `;
 
@@ -627,7 +750,7 @@ function App() {
         </AnimatePresence>
 
         <InfoSection>
-        <SectionTitle
+          <SectionTitle
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -635,18 +758,56 @@ function App() {
             Why Choose Us
           </SectionTitle>
           <Grid>
-            <Card>
-              <Brain />
+            <Card
+              initial={{ opacity: 0, rotateX: -30 }}
+              animate={{ opacity: 1, rotateX: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="icon-3d">
+                <div className="glow"></div>
+                <svg className="rings" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" />
+                  <circle cx="50" cy="50" r="35" />
+                  <circle cx="50" cy="50" r="25" />
+                </svg>
+                <Brain />
+              </div>
               <h3>ML - Driven Insights</h3>
               <p>Advanced machine learning algorithms deliver accurate recommendations to support optimal crop management and planning.</p>
             </Card>
-            <Card>
-              <BarChart3 />
+
+            <Card
+              initial={{ opacity: 0, rotateX: -30 }}
+              animate={{ opacity: 1, rotateX: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <div className="icon-3d">
+                <div className="glow"></div>
+                <svg className="rings" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" />
+                  <circle cx="50" cy="50" r="35" />
+                  <circle cx="50" cy="50" r="25" />
+                </svg>
+                <BarChart3 />
+              </div>
               <h3>Real - time Analytics</h3>
               <p>Track real-time market trends and weather conditions to make smarter, timely farming decisions.</p>
             </Card>
-            <Card>
-              <Database />
+
+            <Card
+              initial={{ opacity: 0, rotateX: -30 }}
+              animate={{ opacity: 1, rotateX: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <div className="icon-3d">
+                <div className="glow"></div>
+                <svg className="rings" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" />
+                  <circle cx="50" cy="50" r="35" />
+                  <circle cx="50" cy="50" r="25" />
+                </svg>
+                <Database />
+              </div>
               <h3>Comprehensive Knowledge</h3>
               <p>Explore a rich database of agricultural best practices and crop-specific guidance tailored for effective farming.</p>
             </Card>
