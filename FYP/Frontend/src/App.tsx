@@ -15,7 +15,7 @@ const AppContainer = styled.div`
 `;
 
 const MainBanner = styled.div`
-  height: 800px;
+  height: 900px;
   background: url('https://bluebridgefinancial.com/wp-content/uploads/2025/01/AdobeStock_964332604.jpeg') center/cover no-repeat;
   position: relative;
   display: flex;
